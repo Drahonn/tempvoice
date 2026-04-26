@@ -13,6 +13,7 @@ import { MessageFlags } from 'discord-api-types/v10'
 import { log } from '../utils/logger.js'
 import t from '../utils/t.js'
 import config from '../../config/config.js'
+import { BITRATE_OPTIONS } from '../constants.js'
 import { globalRateLimiter } from '../utils/rateLimit.js'
 
 /**
@@ -196,7 +197,7 @@ export default async (client, interaction) => {
     const selectMenus = {
       bitrate: {
         placeholder: t('bitrate_placeholder', lang),
-        options: [32000, 48000, 64000, 80000, 96000].map(rate =>
+        options: BITRATE_OPTIONS.map(rate =>
           new StringSelectMenuOptionBuilder().setLabel(`${rate / 1000} kbps`).setValue(`${rate}`)
         )
       },
