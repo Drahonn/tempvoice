@@ -78,7 +78,7 @@ export default async (client, oldState, newState) => {
 
       try {
         const temp = await newChannel.guild.channels.create({
-          name: `${member.user.username} - room`,
+          name: `${member.user.username} - канал`,
           type: ChannelType.GuildVoice,
           parent: process.env.CATEGORY_CHANNEL_ID
         })
