@@ -3,6 +3,8 @@ services:
     image: ghcr.io/drahonn/tempvoice:latest
     container_name: tempvoice-bot
     restart: unless-stopped
+    env_file:
+      - /opt/tempvoice/.env
     volumes:
       - /opt/tempvoice/data:/app/data
     healthcheck:
