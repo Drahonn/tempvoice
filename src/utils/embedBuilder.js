@@ -50,7 +50,7 @@ export const createVoiceEmbed = () => {
   const desc = [
     t('dashboard_description', lang),
     '',
-    ...commands.map(([k]) =>`> **${unicodeEmojis[k]} ${t(k, lang)}**> ${t(`${k}_desc`, lang)}`),
+    ...commands.map(([k]) => ${unicodeEmojis[k]} **${t(k, lang)}**: ${t(${k}_desc, lang)}\n\n`),
     '',
     t('dashboard_create_link', lang, {
       guildId: GUILD_ID,
