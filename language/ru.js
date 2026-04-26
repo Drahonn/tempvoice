@@ -1,7 +1,7 @@
 const ru = {
     // Dashboard
     "dashboard_title": "Панель управления временных каналов",
-    "dashboard_description": "Добро пожаловать — изменяй и настраивай свой голосовой канал!",
+    "dashboard_description": "Изменяй и настраивай свой голосовой канал!",
     "dashboard_create_link": "Твой голос — твоя комната. Начни здесь: https://discord.com/channels/{guildId}/{channelId}",
     "dashboard_footer": "↓ Используй кнопки ниже, чтобы управлять каналом ↓",
     "name_desc": "Изменить название голосового канала",
