@@ -6,7 +6,7 @@ import 'dotenv/config'
 const { GUILD_ID, VOICE_CHANNEL_ID, BANNER_URL } = process.env
 
 const unicodeEmojis = {
-  setting: '⚙️'\n,
+  setting: '⚙️',
   name: '📝',
   limit: '🔢',
   privacy: '🔒',
