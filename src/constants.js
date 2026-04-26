@@ -23,7 +23,7 @@ export const MAX_LOGGED_DELETIONS = 1000
 export const DB_PATH = './data/tempvoice.db'
 
 // Bitrate options (in bps)
-export const BITRATE_OPTIONS = [32000, 48000, 64000, 80000, 96000]
+export const BITRATE_OPTIONS = [32000, 48000, 64000, 80000, 96000, 128000]
 
 // Voice regions
 export const VOICE_REGIONS = [
