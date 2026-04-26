@@ -56,7 +56,7 @@ export const createVoiceEmbed = () => {
       guildId: GUILD_ID,
       channelId: VOICE_CHANNEL_ID
     })
-  ].join('')
+  ].join('\n')
 
   const image = BANNER_URL ||
     'https://media.discordapp.net/attachments/1357016908611715284/1357016929142964376/tempvoice-dashboard.png'
