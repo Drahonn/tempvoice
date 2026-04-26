@@ -4,7 +4,7 @@ services:
     container_name: tempvoice-bot
     restart: unless-stopped
     env_file:
-      - /opt/tempvoice/.env
+      - .env
     volumes:
       - /opt/tempvoice/data:/app/data
     healthcheck:
