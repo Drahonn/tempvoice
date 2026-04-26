@@ -3,8 +3,6 @@ services:
     image: ghcr.io/drahonn/tempvoice:latest
     container_name: tempvoice-bot
     restart: unless-stopped
-    #env_file:
-    #  - .env
     environment:
       DISCORD_TOKEN: ${DISCORD_TOKEN}
       GUILD_ID: ${GUILD_ID}
@@ -15,7 +13,11 @@ services:
       BANNER_URL: ${BANNER_URL}
       USE_UNICODE_EMOJI: ${USE_UNICODE_EMOJI}
     volumes:
-      - /opt/tempvoice/data:/app/data
+      - type: bind
+        source: /opt/tempvoice/data
+        target: /app/data
+        bind:
+          create_host_path: true
     healthcheck:
       test: ["CMD", "node", "--eval", "process.exit(0)"]
       interval: 30s
