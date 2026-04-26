@@ -1,14 +1,17 @@
-version: '3.9'
-
 services:
-  bot:
-    image: ghcr.io/soulofsorrow/tempvoice:latest  # offizielles Image
-    # build: .                                     # optional: lokal bauen
-    env_file:
-      - .env
+  tempvoice:
+    image: ghcr.io/drahonn/tempvoice:latest
+    container_name: tempvoice-bot
     restart: unless-stopped
+    env_file:
+      - /opt/tempvoice/.env
+    volumes:
+      - /opt/tempvoice/data:/app/data
     healthcheck:
-      test: ["CMD", "node", "--eval", "console.log('ok')"]
+      test: ["CMD", "node", "--eval", "process.exit(0)"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
