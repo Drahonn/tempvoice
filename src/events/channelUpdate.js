@@ -27,7 +27,7 @@ export default async (client, oldChannel, newChannel) => {
   }
 
   const categoryID = process.env.CATEGORY_CHANNEL_ID
-  const isInTemp = newChannel.parentId === categoryID && newChannel.name.endsWith(' - room')
+  const isInTemp = newChannel.parentId === categoryID && newChannel.name.endsWith(' - канал')
   if (!isInTemp) return
 
   const ownerId = client.tempVoiceOwners.get(newChannel.id)
