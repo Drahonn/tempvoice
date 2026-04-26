@@ -13,7 +13,7 @@ import { MessageFlags } from 'discord-api-types/v10'
 import { log } from '../utils/logger.js'
 import t from '../utils/t.js'
 import config from '../../config/config.js'
-import { BITRATE_OPTIONS } from '../constants.js'
+import { BITRATE_OPTIONS, VOICE_REGIONS } from '../constants.js'
 import { globalRateLimiter } from '../utils/rateLimit.js'
 
 /**
@@ -203,11 +203,7 @@ export default async (client, interaction) => {
       },
       region: {
         placeholder: t('region_placeholder', lang),
-        options: [
-          'auto', 'brazil', 'hongkong', 'india', 'japan', 'russia',
-          'singapore', 'southafrica', 'sydney', 'us-central', 'us-east',
-          'us-south', 'us-west'
-        ].map(region =>
+        options: VOICE_REGIONS.map(region =>
           new StringSelectMenuOptionBuilder().setLabel(region.replace(/-/g, ' ')).setValue(region)
         )
       }
