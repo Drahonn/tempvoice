@@ -46,11 +46,10 @@ export const createVoiceEmbed = () => {
     ['transfer', '1356995727221461082'],
     ['delete', '1356995611185909824']
   ]
-
+  const showTitle = false
   const desc = [
     t('dashboard_description', lang),
     '',
-    const showTitle = false
 ...commands.map(([k]) => `${unicodeEmojis[k]} ${ showTitle ? `**${t(k, lang)}**: ` : '' }${t(`${k}_desc`, lang)}\n`),
     '',
     t('dashboard_create_link', lang, {
