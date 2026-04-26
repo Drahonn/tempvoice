@@ -14,8 +14,11 @@ services:
       USE_UNICODE_EMOJI: ${USE_UNICODE_EMOJI}
     volumes:
       - type: bind
-        source: /opt/tempvoice/data
-        target: /app/data
+        source: /opt/tempvoice/data/constants.js
+        target: /usr/src/app/src/constants.js
+      - type: bind
+        source: /opt/tempvoice/data/config.js
+        target: /usr/src/app/config/config.js
         bind:
           create_host_path: true
     healthcheck:
