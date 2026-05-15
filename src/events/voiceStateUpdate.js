@@ -51,27 +51,21 @@ export default async (client, oldState, newState) => {
   console.log(`[DEBUG] Voice update: ${oldChannel ? oldChannel.name : 'null'} → ${newChannel ? newChannel.name : 'null'} | User: ${member?.user.username}`);
 
   if (!oldChannel && newChannel) {
-    // === Enhanced ID Debug ===
-    console.log(`[DEBUG ID CHECK] Trigger ID from .env: ${process.env.VOICE_CHANNEL_ID}`);
-    console.log(`[DEBUG ID CHECK] Joined channel ID : ${newChannel.id} | Name: ${newChannel.name}`);
-
     if (newChannel.id === process.env.VOICE_CHANNEL_ID) {
-      console.log(`[DEBUG CREATE] IDs MATCH — Starting temporary channel creation`);
-
       // Check if user already has a creation in progress (race condition prevention)
       if (creationLocks.has(member.id)) {
-        console.log(`[DEBUG CREATE] Creation locked for this user`);
         return
       }
 
       // Check if user has exceeded max channels
       const userChannels = getUserTempChannels(member.id)
       if (userChannels.length >= MAX_CHANNELS_PER_USER) {
-        console.log(`[DEBUG CREATE] Max channels limit reached`);
         try {
           await member.send(t('max_channels_reached', lang, { max: MAX_CHANNELS_PER_USER }) ||
             `You've reached the maximum limit of ${MAX_CHANNELS_PER_USER} active channels. Please close one of your existing channels first.`)
-        } catch (err) {}
+        } catch (err) {
+          // User has DMs disabled, silently fail
+        }
         return
       }
 
@@ -118,7 +112,6 @@ export default async (client, oldState, newState) => {
         creationLocks.delete(member.id)
       }
     } else {
-      console.log(`[DEBUG ID CHECK] IDs do NOT match — this is a normal channel join`);
       log('log_joined', client, {
         user: member.user.username,
         channel: newChannel.name
