@@ -53,7 +53,6 @@ export default async (client, oldState, newState) => {
   const newChannel = newState.channel
   const member = newState.member || oldState.member
   const lang = config.language
-  console.log(`[DEBUG] Voice update: ${oldChannel ? oldChannel.name : 'null'} → ${newChannel ? newChannel.name : 'null'} | User: ${member?.user.username}`);
 
   if (!oldChannel && newChannel) {
     if (newChannel.id === process.env.VOICE_CHANNEL_ID) {
