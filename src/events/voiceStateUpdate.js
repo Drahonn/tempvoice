@@ -14,25 +14,31 @@ class BoundedSet {
     this.maxSize = maxSize
     this.items = new Set()
   }
+
   add(item) {
+    // If at max capacity, remove oldest item
     if (this.items.size >= this.maxSize) {
       const firstItem = this.items.values().next().value
       this.items.delete(firstItem)
     }
     this.items.add(item)
   }
+
   has(item) {
     return this.items.has(item)
   }
+
   delete(item) {
     this.items.delete(item)
   }
+
   clear() {
     this.items.clear()
   }
 }
 
 const loggedDeleted = new BoundedSet(1000)
+
 // Lock to prevent race conditions when multiple users join simultaneously
 const creationLocks = new Set()
 
@@ -47,7 +53,6 @@ export default async (client, oldState, newState) => {
   const newChannel = newState.channel
   const member = newState.member || oldState.member
   const lang = config.language
-
   console.log(`[DEBUG] Voice update: ${oldChannel ? oldChannel.name : 'null'} → ${newChannel ? newChannel.name : 'null'} | User: ${member?.user.username}`);
 
   if (!oldChannel && newChannel) {
@@ -73,42 +78,26 @@ export default async (client, oldState, newState) => {
       creationLocks.add(member.id)
 
       try {
-        console.log(`[DEBUG CREATE] Starting channel creation for ${member.user.username}`);
-        console.log(`[DEBUG CREATE] Using category: ${process.env.CATEGORY_CHANNEL_ID}`);
-
         const temp = await newChannel.guild.channels.create({
           name: `${member.user.username} - канал`,
           type: ChannelType.GuildVoice,
           parent: process.env.CATEGORY_CHANNEL_ID
-        });
+        })
 
-        console.log(`[DEBUG CREATE] Channel created successfully: ${temp.name} (${temp.id})`);
-
-        await newState.setChannel(temp);
-        console.log(`[DEBUG CREATE] User moved to new channel`);
-
-        client.tempVoiceOwners ??= new Map();
-        client.tempVoiceOwners.set(temp.id, member.id);
+        await newState.setChannel(temp)
+        client.tempVoiceOwners ??= new Map()
+        client.tempVoiceOwners.set(temp.id, member.id)
 
         // Save to database
-        addTempChannel(temp.id, member.id, newChannel.guild.id);
-        console.log(`[DEBUG CREATE] Saved to database`);
+        addTempChannel(temp.id, member.id, newChannel.guild.id)
 
         log('log_switched', client, {
           user: member.user.username,
           from: newChannel.name,
           to: temp.name
-        });
-      } catch (err) {
-        console.error(`[ERROR CREATE] Failed to create channel!`);
-        console.error(`Message: ${err.message}`);
-        console.error(`Code: ${err.code || 'N/A'}`);
-        console.error(err);
-
-        try {
-          await member.send(`❌ Failed to create temporary channel.\nError: ${err.message}`);
-        } catch (e) {}
+        })
       } finally {
+        // Always unlock, even if there was an error
         creationLocks.delete(member.id)
       }
     } else {
@@ -117,10 +106,12 @@ export default async (client, oldState, newState) => {
         channel: newChannel.name
       })
 
+      // Update activity if it's a temp channel
       if (client.tempVoiceOwners?.has(newChannel.id)) {
         updateChannelActivity(newChannel.id)
       }
     }
+
     return
   }
 
@@ -140,6 +131,7 @@ export default async (client, oldState, newState) => {
   if (oldChannel && newChannel && oldChannel.id !== newChannel.id) {
     const isOwner = client.tempVoiceOwners?.get(oldChannel.id) === member.id
     if (oldChannel.members.size > 0 || !isOwner) return
+
     await deleteChannel(oldChannel, client)
   }
 }
@@ -154,6 +146,7 @@ async function deleteChannel(channel, client) {
 
   try {
     await channel.delete()
+
     if (
       !client.deletedByInteraction?.has(channel.id) &&
       !loggedDeleted.has(channel.id)
@@ -162,11 +155,13 @@ async function deleteChannel(channel, client) {
       loggedDeleted.add(channel.id)
     }
 
+    // Remove from memory and database
     client.tempVoiceOwners.delete(channel.id)
     client.deletedByInteraction?.delete(channel.id)
     removeTempChannel(channel.id)
   } catch (err) {
     if (err.code === 10003) {
+      // Channel already deleted
       if (
         !client.deletedByInteraction?.has(channel.id) &&
         !loggedDeleted.has(channel.id)
@@ -174,6 +169,7 @@ async function deleteChannel(channel, client) {
         log('log_deleted', client, { channel: channel.name })
         loggedDeleted.add(channel.id)
       }
+      // Still remove from database even if already deleted
       client.tempVoiceOwners.delete(channel.id)
       removeTempChannel(channel.id)
     } else {
